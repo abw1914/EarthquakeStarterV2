@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -12,6 +13,8 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String LOG_TAG = MainActivity.class.getSimpleName();
+
     ArrayList<EarthquakeData> earthquakes;
     private static final String SAMPLE_JSON_RESPONSE = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-01-01&endtime=2016-01-31&minmag=6&limit=10";
 
@@ -25,27 +28,29 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private class GetEarthquakeData extends AsyncTask<String, Void, EarthquakeData> {
+    private class GetEarthquakeData extends AsyncTask<String, Void, ArrayList<EarthquakeData>> {
 
 
         @Override
-        protected EarthquakeData doInBackground(String... urls) {
+        protected ArrayList<EarthquakeData> doInBackground(String... urls) {
             if (urls.length < 1 || urls[0] == null) {
                 return null;
             }
-            EarthquakeData earthquakeData = QueryUtils.fetchEarthquakeDate(urls[0]);
+            ArrayList<EarthquakeData> earthquakeData = QueryUtils.fetchEarthquakeDate(urls[0]);
+            Log.e(LOG_TAG, "Do in background executing");
             return earthquakeData;
         }
 
-        @Override
-        protected void onPostExecute(EarthquakeData earthquakeData) {
+
+        protected void onPostExecute(ArrayList<EarthquakeData> earthquakeData) {
             if (earthquakeData == null) {
                 return;
             }
             updateUi(earthquakeData);
+            Log.e(LOG_TAG, "Updating the UI is here");
         }
 
-        private void updateUi(EarthquakeData earthquakeData) {
+        private void updateUi(ArrayList<EarthquakeData> earthquakeData) {
 
             // Find a reference to the {@link ListView} in the layout
             ListView earthquakeListView = (ListView) findViewById(R.id.list);

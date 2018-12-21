@@ -20,9 +20,9 @@ import java.util.List;
 
 public class QueryUtils {
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
-    private ArrayList<EarthquakeData> earthquakeData;
+    public ArrayList<EarthquakeData> earthquakeData;
 
-    private static final String SAMPLE_JSON_RESPONSE = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-01-01&endtime=2016-01-31&minmag=6&limit=10";
+   // private static final String SAMPLE_JSON_RESPONSE = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-01-01&endtime=2016-01-31&minmag=6&limit=10";
     /**
      * Create a private constructor because no one should ever create a {@link QueryUtils} object.
      * This class is only meant to hold static variables and methods, which can be accessed
@@ -31,7 +31,7 @@ public class QueryUtils {
     private QueryUtils() {
     }
 
-    public static EarthquakeData fetchEarthquakeDate(String requestUrl) {
+    public static ArrayList<EarthquakeData> fetchEarthquakeDate(String requestUrl) {
         URL url = createUrl(requestUrl);
         String jsonResponse = null;
         try {
@@ -41,7 +41,7 @@ public class QueryUtils {
             e.printStackTrace();
         }
 
-        EarthquakeData extractEarthquakes = extractFeatureFromJson(jsonResponse);
+        ArrayList<EarthquakeData> extractEarthquakes = extractFeatureFromJson(jsonResponse);
         return extractEarthquakes;
 
     }
@@ -117,7 +117,7 @@ public class QueryUtils {
      * Return a list of {@link EarthquakeData} objects that has been built up from
      * parsing a JSON response.
      */
-    public static EarthquakeData extractFeatureFromJson (String earthquakeJson){
+    public static ArrayList<EarthquakeData> extractFeatureFromJson (String earthquakeJson){
         if(TextUtils.isEmpty(earthquakeJson)) {
             return null;
         }
@@ -131,7 +131,7 @@ public class QueryUtils {
         try {
 
             // Create a JSONObject from the SAMPLE_JSON_RESPONSE string
-            JSONObject baseJsonResponse = new JSONObject(SAMPLE_JSON_RESPONSE);
+            JSONObject baseJsonResponse = new JSONObject(earthquakeJson);
 
             // Extract the JSONArray associated with the key called "features",
             // which represents a list of features (or earthquakes).
@@ -176,7 +176,7 @@ public class QueryUtils {
         }
 
         // Return the list of earthquakes
-        return null;
+        return earthquakes;
     }
 
 
